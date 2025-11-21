@@ -1,0 +1,8 @@
+# Ignore any PNG file starting with error_test (in any folder)
+**/error_test*.png
+
+# If they are only in the root:
+# error_test*.png
+
+# If only inside an images directory:
+# images/error_test*.png
