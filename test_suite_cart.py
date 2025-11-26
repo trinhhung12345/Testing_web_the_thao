@@ -64,34 +64,63 @@ class CartTest(unittest.TestCase):
         except: pass
 
     def ensure_cart_has_item(self):
-        """Hàm phụ: Kiểm tra giỏ hàng, nếu trống thì đi thêm đồ"""
+        """Hàm phụ: Đảm bảo giỏ hàng có hàng (Phiên bản Fix cho thẻ <a>)"""
         driver = self.driver
+        print("🛒 Đang kiểm tra giỏ hàng...")
         driver.get(URL_CART)
         
         # Kiểm tra xem có chữ "Giỏ hàng trống" không
-        body_text = driver.find_element(By.TAG_NAME, "body").text
-        if "Giỏ hàng trống" in body_text:
-            print("🛒 Giỏ hàng đang trống. Đang đi thêm sản phẩm...")
-            driver.get(URL_PRODUCTS)
+        try:
+            body_text = driver.find_element(By.TAG_NAME, "body").text
+            # Nếu giỏ hàng KHÔNG trống (tức là đã có hàng), thì return luôn, không cần thêm nữa
+            if "Giỏ hàng trống" not in body_text and "Thanh toán" in body_text:
+                print("✅ Giỏ hàng đã có sẵn sản phẩm. Tiếp tục test.")
+                return
+        except:
+            pass
+
+        print("ℹ️ Giỏ hàng trống. Đang đi thêm sản phẩm...")
+        driver.get(URL_PRODUCTS)
+        
+        try:
+            # 1. Tìm nút thêm giỏ hàng (Thẻ <a> chứa href module=cart&act=add)
+            # XPath này tìm thẻ <a> có link chứa 'act=add'
+            add_btn_xpath = "(//a[contains(@href, 'module=cart') and contains(@href, 'act=add')])[1]"
             
-            # Thêm sản phẩm đầu tiên vào giỏ
+            add_btn = WebDriverWait(driver, 10).until(
+                EC.presence_of_element_located((By.XPATH, add_btn_xpath))
+            )
+            
+            # 2. Scroll tới nút đó (Quan trọng để tránh bị Sidebar che)
+            driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", add_btn)
+            time.sleep(1) # Chờ scroll xong
+            
+            # 3. Dùng JS Click (Mạnh hơn click thường)
+            driver.execute_script("arguments[0].click();", add_btn)
+            print("🖱️ Đã click thêm vào giỏ (bằng JS).")
+            
+            # 4. Xử lý Alert (Nếu có) hoặc Chờ chuyển trang
+            # Logic server của bạn: Thường sẽ hiện Alert rồi mới chuyển, hoặc chuyển luôn.
             try:
-                add_btn = WebDriverWait(driver, 10).until(
-                    EC.element_to_be_clickable((By.XPATH, "(//a[contains(text(), 'Thêm vào giỏ')])[1]"))
-                )
-                driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", add_btn)
-                time.sleep(1)
-                add_btn.click()
-                time.sleep(2) # Chờ xử lý
-                
-                # Xử lý alert nếu có
-                try: driver.switch_to.alert.accept()
-                except: pass
-                
-                print("✅ Đã thêm 1 sản phẩm. Quay lại giỏ hàng.")
+                # Chờ Alert xuất hiện trong 3 giây
+                WebDriverWait(driver, 3).until(EC.alert_is_present())
+                alert = driver.switch_to.alert
+                print(f"⚠️ Alert xuất hiện: {alert.text}")
+                alert.accept() # Bấm OK
+                time.sleep(2)  # Chờ redirect sau alert
+            except:
+                print("ℹ️ Không thấy Alert, kiểm tra xem đã chuyển trang chưa.")
+
+            # 5. Quay lại giỏ hàng để chắc chắn
+            if "module=cart" not in driver.current_url:
                 driver.get(URL_CART)
-            except Exception as e:
-                print(f"❌ Lỗi khi thêm sản phẩm: {e}")
+                
+            print("✅ Đã thực hiện quy trình thêm hàng.")
+            
+        except Exception as e:
+            print(f"❌ Lỗi CRITICAL: Không thể thêm sản phẩm vào giỏ! Lỗi: {e}")
+            # Nếu bước này fail, các test case sau sẽ fail hết.
+            self.fail("Setup thất bại: Không thể thêm hàng vào giỏ.")
 
     # --- CÁC TEST CASE ---
 
