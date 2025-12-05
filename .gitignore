@@ -6,3 +6,5 @@
 
 # If only inside an images directory:
 # images/error_test*.png
+
+/venv/*
