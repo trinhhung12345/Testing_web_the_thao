@@ -8,3 +8,5 @@
 # images/error_test*.png
 
 /venv/*
+/results/*
+__pycache__/
