@@ -326,6 +326,36 @@ class AdminProductsCRUDTest(unittest.TestCase):
 
     # ==================== TEST 03: THÊM SẢN PHẨM ====================
     
+    def _create_test_image(self, path, width=400, height=400, color=(73, 109, 137)):
+        """Tạo ảnh test bằng Pillow"""
+        from PIL import Image, ImageDraw, ImageFont
+        
+        # Tạo ảnh với màu nền
+        img = Image.new('RGB', (width, height), color=color)
+        draw = ImageDraw.Draw(img)
+        
+        # Thêm text vào giữa ảnh
+        text = f"TEST\n{TEST_TIMESTAMP}"
+        try:
+            # Thử dùng font mặc định
+            font = ImageFont.load_default()
+        except:
+            font = None
+        
+        # Vẽ text ở giữa
+        bbox = draw.textbbox((0, 0), text, font=font) if font else (0, 0, 100, 50)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+        x = (width - text_width) // 2
+        y = (height - text_height) // 2
+        draw.text((x, y), text, fill=(255, 255, 255), font=font)
+        
+        # Vẽ border
+        draw.rectangle([0, 0, width-1, height-1], outline=(255, 255, 255), width=3)
+        
+        img.save(path, 'JPEG', quality=90)
+        return path
+    
     def test_03_add_product_success(self):
         """TC_CRUD01: Thêm sản phẩm mới và verify trong Database"""
         print("\n" + "-"*50)
@@ -336,58 +366,17 @@ class AdminProductsCRUDTest(unittest.TestCase):
         driver = self.driver
         
         try:
-            # Tạo file ảnh test nếu chưa có
+            # Tạo file ảnh test bằng Pillow
             test_image_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'test_image.jpg')
             test_image_path = os.path.abspath(test_image_path)
             
-            if not os.path.exists(test_image_path):
-                print("  📷 Tạo ảnh test...")
-                try:
-                    from PIL import Image
-                    # Tạo ảnh 200x200 màu xanh
-                    img = Image.new('RGB', (200, 200), color=(73, 109, 137))
-                    img.save(test_image_path, 'JPEG')
-                    print(f"  ✅ Đã tạo ảnh test: {test_image_path}")
-                except ImportError:
-                    # Nếu không có PIL, tạo file JPEG đơn giản bằng binary
-                    print("  ⚠️ Không có PIL, tạo ảnh JPEG cơ bản...")
-                    # Minimal valid JPEG (1x1 pixel red)
-                    jpeg_data = bytes([
-                        0xFF, 0xD8, 0xFF, 0xE0, 0x00, 0x10, 0x4A, 0x46, 0x49, 0x46, 0x00, 0x01,
-                        0x01, 0x00, 0x00, 0x01, 0x00, 0x01, 0x00, 0x00, 0xFF, 0xDB, 0x00, 0x43,
-                        0x00, 0x08, 0x06, 0x06, 0x07, 0x06, 0x05, 0x08, 0x07, 0x07, 0x07, 0x09,
-                        0x09, 0x08, 0x0A, 0x0C, 0x14, 0x0D, 0x0C, 0x0B, 0x0B, 0x0C, 0x19, 0x12,
-                        0x13, 0x0F, 0x14, 0x1D, 0x1A, 0x1F, 0x1E, 0x1D, 0x1A, 0x1C, 0x1C, 0x20,
-                        0x24, 0x2E, 0x27, 0x20, 0x22, 0x2C, 0x23, 0x1C, 0x1C, 0x28, 0x37, 0x29,
-                        0x2C, 0x30, 0x31, 0x34, 0x34, 0x34, 0x1F, 0x27, 0x39, 0x3D, 0x38, 0x32,
-                        0x3C, 0x2E, 0x33, 0x34, 0x32, 0xFF, 0xC0, 0x00, 0x0B, 0x08, 0x00, 0x01,
-                        0x00, 0x01, 0x01, 0x01, 0x11, 0x00, 0xFF, 0xC4, 0x00, 0x1F, 0x00, 0x00,
-                        0x01, 0x05, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00,
-                        0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-                        0x09, 0x0A, 0x0B, 0xFF, 0xC4, 0x00, 0xB5, 0x10, 0x00, 0x02, 0x01, 0x03,
-                        0x03, 0x02, 0x04, 0x03, 0x05, 0x05, 0x04, 0x04, 0x00, 0x00, 0x01, 0x7D,
-                        0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21, 0x31, 0x41, 0x06,
-                        0x13, 0x51, 0x61, 0x07, 0x22, 0x71, 0x14, 0x32, 0x81, 0x91, 0xA1, 0x08,
-                        0x23, 0x42, 0xB1, 0xC1, 0x15, 0x52, 0xD1, 0xF0, 0x24, 0x33, 0x62, 0x72,
-                        0x82, 0x09, 0x0A, 0x16, 0x17, 0x18, 0x19, 0x1A, 0x25, 0x26, 0x27, 0x28,
-                        0x29, 0x2A, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0x3A, 0x43, 0x44, 0x45,
-                        0x46, 0x47, 0x48, 0x49, 0x4A, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59,
-                        0x5A, 0x63, 0x64, 0x65, 0x66, 0x67, 0x68, 0x69, 0x6A, 0x73, 0x74, 0x75,
-                        0x76, 0x77, 0x78, 0x79, 0x7A, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89,
-                        0x8A, 0x92, 0x93, 0x94, 0x95, 0x96, 0x97, 0x98, 0x99, 0x9A, 0xA2, 0xA3,
-                        0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0xAA, 0xB2, 0xB3, 0xB4, 0xB5, 0xB6,
-                        0xB7, 0xB8, 0xB9, 0xBA, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9,
-                        0xCA, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xE1, 0xE2,
-                        0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xF1, 0xF2, 0xF3, 0xF4,
-                        0xF5, 0xF6, 0xF7, 0xF8, 0xF9, 0xFA, 0xFF, 0xDA, 0x00, 0x08, 0x01, 0x01,
-                        0x00, 0x00, 0x3F, 0x00, 0xFB, 0xD5, 0xDB, 0x20, 0xA8, 0xA8, 0xA8, 0x02,
-                        0xFF, 0xD9
-                    ])
-                    with open(test_image_path, 'wb') as f:
-                        f.write(jpeg_data)
-                    print(f"  ✅ Đã tạo ảnh test: {test_image_path}")
-            else:
-                print(f"  📷 Sử dụng ảnh có sẵn: {test_image_path}")
+            print("  📷 Tạo ảnh test bằng Pillow...")
+            try:
+                self._create_test_image(test_image_path, width=400, height=400, color=(52, 152, 219))
+                print(f"  ✅ Đã tạo ảnh test: {test_image_path}")
+            except Exception as img_ex:
+                print(f"  ❌ Lỗi tạo ảnh: {img_ex}")
+                self.skipTest(f"Không thể tạo ảnh test: {img_ex}")
             
             # Navigate đến trang products
             self._navigate_to_products_page()
@@ -453,71 +442,127 @@ class AdminProductsCRUDTest(unittest.TestCase):
             
             print("  📝 Đã điền thông tin sản phẩm")
             
-            # Upload ảnh thumbnail - TÌM INPUT FILE VÀ XỬ LÝ IMAGE CROPPER
+            # ========== UPLOAD ẢNH THUMBNAIL VỚI IMAGE CROPPER ==========
             print("  📷 Bắt đầu upload ảnh thumbnail...")
             thumbnail_uploaded = False
             
-            # Tìm tất cả input[type='file'] trong modal
-            file_inputs = driver.find_elements(By.CSS_SELECTOR, "#addRowModal input[type='file']")
-            print(f"     Tìm thấy {len(file_inputs)} input file trong modal")
+            # Liệt kê tất cả input[type='file'] trong trang (không chỉ trong modal)
+            all_file_inputs = driver.find_elements(By.CSS_SELECTOR, "input[type='file']")
+            print(f"     Tổng số input file trên trang: {len(all_file_inputs)}")
             
-            for idx, file_input in enumerate(file_inputs):
-                input_id = file_input.get_attribute('id')
-                input_name = file_input.get_attribute('name')
-                input_accept = file_input.get_attribute('accept')
-                print(f"     [{idx+1}] ID='{input_id}', name='{input_name}', accept='{input_accept}'")
+            for idx, file_input in enumerate(all_file_inputs):
+                input_id = file_input.get_attribute('id') or 'N/A'
+                input_name = file_input.get_attribute('name') or 'N/A'
+                input_accept = file_input.get_attribute('accept') or 'N/A'
+                is_displayed = file_input.is_displayed()
+                print(f"     [{idx+1}] ID='{input_id}', name='{input_name}', accept='{input_accept}', visible={is_displayed}")
             
-            # Thử upload qua input file đầu tiên (thường là thumbnail)
-            if file_inputs:
+            # Tìm input file cho thumbnail với nhiều selector
+            thumbnail_input = None
+            thumbnail_selectors = [
+                "#addRowModal input[type='file'][accept*='image']",
+                "#addRowModal input[type='file']",
+                "input[type='file'][id*='thumbnail' i]",
+                "input[type='file'][id*='Thumbnail' i]",
+                "input[type='file'][name*='thumbnail' i]",
+                "input[type='file'][accept*='image']",
+                "#addProductThumbnail",
+                "#addProductThumbnailInput",
+                "#thumbnailInput",
+            ]
+            
+            for selector in thumbnail_selectors:
                 try:
-                    file_input = file_inputs[0]
-                    # Make input visible nếu bị ẩn
-                    driver.execute_script("arguments[0].style.display = 'block'; arguments[0].style.visibility = 'visible';", file_input)
+                    elements = driver.find_elements(By.CSS_SELECTOR, selector)
+                    if elements:
+                        thumbnail_input = elements[0]
+                        print(f"  ✅ Tìm thấy input file với selector: {selector}")
+                        print(f"     ID: {thumbnail_input.get_attribute('id')}")
+                        break
+                except:
+                    continue
+            
+            if not thumbnail_input and all_file_inputs:
+                # Fallback: dùng input file đầu tiên
+                thumbnail_input = all_file_inputs[0]
+                print(f"  ⚠️ Sử dụng input file đầu tiên: {thumbnail_input.get_attribute('id')}")
+            
+            if thumbnail_input:
+                try:
+                    # Make input visible và interactable
+                    driver.execute_script("""
+                        arguments[0].style.display = 'block';
+                        arguments[0].style.visibility = 'visible';
+                        arguments[0].style.opacity = '1';
+                        arguments[0].style.height = 'auto';
+                        arguments[0].style.width = 'auto';
+                        arguments[0].style.position = 'relative';
+                    """, thumbnail_input)
                     time.sleep(0.5)
                     
-                    file_input.send_keys(test_image_path)
-                    print(f"  ✅ Đã gửi file ảnh vào input")
+                    # Gửi file path vào input
+                    thumbnail_input.send_keys(test_image_path)
+                    print(f"  ✅ Đã gửi file ảnh: {test_image_path}")
                     time.sleep(2)
                     
-                    # Chờ xem Image Cropper Modal có xuất hiện không
+                    # Xử lý Image Cropper Modal
                     try:
                         cropper_modal = WebDriverWait(driver, 5).until(
                             EC.visibility_of_element_located((By.ID, "imageCropperModal"))
                         )
                         print("  ✅ Image Cropper Modal đã xuất hiện")
                         
-                        # Chờ cropper load xong
-                        time.sleep(2)
+                        # Chờ Cropper.js khởi tạo xong (quan trọng!)
+                        time.sleep(3)
                         
-                        # Click nút "Cắt & Sử dụng"
-                        confirm_crop_btn = WebDriverWait(driver, 5).until(
-                            EC.element_to_be_clickable((By.ID, "confirmCropButton"))
-                        )
-                        self._js_click(confirm_crop_btn)
-                        print("  ✅ Đã click 'Cắt & Sử dụng'")
+                        # Tìm và click nút "Cắt & Sử dụng" (confirmCropButton)
+                        crop_btn_selectors = [
+                            (By.ID, "confirmCropButton"),
+                            (By.CSS_SELECTOR, "#imageCropperModal .btn-primary"),
+                            (By.CSS_SELECTOR, "#imageCropperModal button[type='button']:not(.btn-secondary)"),
+                            (By.XPATH, "//div[@id='imageCropperModal']//button[contains(text(),'Cắt') or contains(text(),'Sử dụng') or contains(text(),'OK')]")
+                        ]
                         
-                        # Chờ cropper modal đóng
-                        WebDriverWait(driver, 5).until(
-                            EC.invisibility_of_element_located((By.ID, "imageCropperModal"))
-                        )
-                        print("  ✅ Image Cropper đã đóng")
+                        crop_clicked = False
+                        for selector in crop_btn_selectors:
+                            try:
+                                crop_btn = WebDriverWait(driver, 3).until(
+                                    EC.element_to_be_clickable(selector)
+                                )
+                                btn_text = crop_btn.text.strip()
+                                print(f"  ✅ Tìm thấy nút crop: '{btn_text}'")
+                                self._js_click(crop_btn)
+                                print("  ✅ Đã click nút crop")
+                                crop_clicked = True
+                                break
+                            except:
+                                continue
+                        
+                        if crop_clicked:
+                            # Chờ cropper modal đóng
+                            WebDriverWait(driver, 10).until(
+                                EC.invisibility_of_element_located((By.ID, "imageCropperModal"))
+                            )
+                            print("  ✅ Image Cropper đã đóng")
+                            thumbnail_uploaded = True
+                        else:
+                            print("  ❌ Không thể click nút crop")
+                            
+                    except TimeoutException:
+                        print("  ℹ️ Không có Image Cropper - ảnh có thể đã được upload trực tiếp")
                         thumbnail_uploaded = True
-                        time.sleep(1)
-                        
                     except Exception as crop_ex:
-                        print(f"  ⚠️ Không có Image Cropper hoặc lỗi: {crop_ex}")
-                        # Có thể ảnh được upload trực tiếp không qua cropper
-                        thumbnail_uploaded = True
+                        print(f"  ⚠️ Lỗi xử lý Image Cropper: {crop_ex}")
                         
                 except Exception as upload_ex:
-                    print(f"  ⚠️ Lỗi upload ảnh: {upload_ex}")
+                    print(f"  ❌ Lỗi upload ảnh: {upload_ex}")
             else:
-                print("  ⚠️ Không tìm thấy input file trong modal")
-            
-            if not thumbnail_uploaded:
-                print("  ⚠️ Không thể upload thumbnail - form có thể fail")
+                print("  ❌ Không tìm thấy input file để upload ảnh")
             
             time.sleep(1)
+            
+            if not thumbnail_uploaded:
+                print("  ⚠️ Không thể upload thumbnail - form có thể yêu cầu ảnh bắt buộc")
             
             # Click nút Thêm mới
             submit_btn = driver.find_element(By.ID, "submitAddProductButton")
