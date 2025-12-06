@@ -3,3 +3,4 @@ html-testRunner
 pymysql
 pytest
 Pillow
+bcrypt
