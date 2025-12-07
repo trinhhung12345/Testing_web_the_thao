@@ -1,4 +1,4 @@
-# 🧪 Kiểm Thử Tự Động - Web Thể Thao
+# 🧪 Kiểm Thử Tự Động - Web Thể Thao (Kiểm thử chức năng tự động)
 
 Dự án kiểm thử tự động cho website bán hàng thể thao sử dụng **Selenium WebDriver** và **Python**.
 
