@@ -4,3 +4,4 @@ pymysql
 pytest
 Pillow
 bcrypt
+openpyxl
