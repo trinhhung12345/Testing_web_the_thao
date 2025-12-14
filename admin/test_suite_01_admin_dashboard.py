@@ -10,8 +10,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 
 # --- CẤU HÌNH DỮ LIỆU TEST ---
-URL_LOGIN = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/login.php"
-URL_ADMIN_DASHBOARD = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin/index.php?page=dashboard"
+URL_LOGIN = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/login.php"
+URL_ADMIN_DASHBOARD = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin/index.php?page=dashboard"
 
 # Tài khoản Admin thật trong DB
 ADMIN_ACC = {"email": "wearingarmor12345@gmail.com", "pass": "hung12345"}

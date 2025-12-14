@@ -10,7 +10,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select # Cần import cái này để xử lý Dropdown
 
 # URL danh sách sản phẩm
-URL_PRODUCTS = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/viewUser/index.php?module=sanpham"
+URL_PRODUCTS = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/viewUser/index.php?module=sanpham"
 
 class ProductFilterTest(unittest.TestCase):
 

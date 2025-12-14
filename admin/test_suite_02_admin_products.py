@@ -12,8 +12,8 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 
 # --- CẤU HÌNH DỮ LIỆU TEST ---
-URL_LOGIN = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/login.php"
-URL_ADMIN_PRODUCTS = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin/index.php?page=products"
+URL_LOGIN = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/login.php"
+URL_ADMIN_PRODUCTS = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin/index.php?page=products"
 
 # Tài khoản Admin
 ADMIN_ACC = {"email": "wearingarmor12345@gmail.com", "pass": "hung12345"}

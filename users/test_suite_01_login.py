@@ -8,7 +8,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # --- CẤU HÌNH DỮ LIỆU TEST ---
-URL_LOGIN = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/login.php"
+URL_LOGIN = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/login.php"
 
 # Tài khoản Admin thật trong DB
 ADMIN_ACC = {"email": "wearingarmor12345@gmail.com", "pass": "hung12345"} 

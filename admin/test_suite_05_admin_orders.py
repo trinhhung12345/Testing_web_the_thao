@@ -12,8 +12,8 @@ from selenium.common.exceptions import TimeoutException, NoSuchElementException
 from selenium.webdriver.common.keys import Keys
 
 # --- CẤU HÌNH URL ---
-URL_LOGIN = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/login.php"
-URL_ADMIN_ORDERS = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin/index.php?page=orders"
+URL_LOGIN = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/login.php"
+URL_ADMIN_ORDERS = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin/index.php?page=orders"
 
 # --- CẤU HÌNH DATABASE ---
 DB_CONFIG = {
@@ -756,7 +756,7 @@ class AdminOrdersTest(unittest.TestCase):
         
         try:
             # Navigate đến trang chi tiết đơn hàng
-            detail_url = f"https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin/index.php?page=order_details&id={order_id}"
+            detail_url = f"https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin/index.php?page=order_details&id={order_id}"
             driver.get(detail_url)
             time.sleep(2)
             
@@ -856,7 +856,7 @@ class AdminOrdersTest(unittest.TestCase):
         
         try:
             # Navigate đến trang chi tiết đơn hàng
-            detail_url = f"https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin/index.php?page=order_details&id={order_id}"
+            detail_url = f"https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin/index.php?page=order_details&id={order_id}"
             driver.get(detail_url)
             time.sleep(2)
             

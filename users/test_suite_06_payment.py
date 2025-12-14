@@ -9,9 +9,9 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # URL
-BASE_URL = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/viewUser/index.php"
+BASE_URL = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/viewUser/index.php"
 URL_CART = BASE_URL + "?module=cart"
-URL_LOGIN = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/login.php"
+URL_LOGIN = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/login.php"
 URL_PRODUCTS = BASE_URL + "?module=sanpham"
 
 # Tài khoản test

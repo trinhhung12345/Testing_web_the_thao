@@ -3,7 +3,7 @@
 TEST SUITE 07: QUẢN LÝ ĐÁNH GIÁ (REVIEWS)
 ===========================================
 Mô tả: Kiểm thử chức năng quản lý đánh giá sản phẩm của admin
-URL: https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin/index.php?page=reviews
+URL: https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin/index.php?page=reviews
 Database: user_database_biggestzoo
 Table: review
 
@@ -40,8 +40,8 @@ from selenium.webdriver.chrome.service import Service
 import pymysql
 
 # ==================== CẤU HÌNH ====================
-BASE_URL = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/ViewAdmin"
-URL_LOGIN = "https://whippet-exotic-specially.ngrok-free.app/QlyShopTheThao/src/view/login.php"
+BASE_URL = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/ViewAdmin"
+URL_LOGIN = "https://melissia-untragical-inviably.ngrok-free.dev/QlyShopTheThao/src/view/login.php"
 URL_REVIEWS = f"{BASE_URL}/index.php?page=reviews"
 
 ADMIN_ACC = {
